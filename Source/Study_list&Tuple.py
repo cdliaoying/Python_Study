@@ -38,7 +38,7 @@ L = [
 
 S = ['Java','Python','Ruby','PHP']
 x = 5
-while x >= 0:
+while x >= 1:
     s = input('请输入姓名...')
     if s in S:
         print(s)
@@ -48,5 +48,3 @@ while x >= 0:
         x = x - 1
 else:
     print('您已经超过输入次数')
-
-print('hello,world')
