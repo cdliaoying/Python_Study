@@ -31,11 +31,11 @@ def Address_First_Cut(sen):
     re2 = re.findall(rule2, sen)  # 查找规则2包含字符，如包含len>0。规则漏洞：若地址中非街道部分包含本关键字,可能导致结果错误
     if len(re1) > 0:
         sentence = sen.split(re1[0], 1)
-        sen1 = sentence[0] + re1[0]
+        sen1 = '%s%s' % (sentence[0], re1[0]) # %s效率较 +效率更高
         sen2 = sentence[1]
     elif len(re2) > 0:
         sentence = sen.split(re2[0], 1)
-        sen1 = sentence[0] + re2[0]
+        sen1 = '%s%s' % (sentence[0], re2[0])
         sen2 = sentence[1]
     else:
         sen1 = '您输入的地址不符合标准：'+sen
