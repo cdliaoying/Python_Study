@@ -19,42 +19,48 @@ Description：本文档为验证地址识别和核验的业务逻辑编写
 # Step1:将地址拆分为宏观和微观部分。
 # 拆分规则（待确定）：1）字段中包含：a。附*号，b. *号
 
-import re
 import jieba
-jieba.load_userdict('/Applications/jieba-0.39/User_Define.txt') # 引用本地词库
+
+jieba.load_userdict('/Applications/jieba-0.39/User_Define.txt')  # 引用本地词库
+
 
 # 定义检查函数，检查地址中是否包含既定规则的字符，如果包含，拆分字符，如果不包含，提示检查地址
-def Address_First_Cut(sen):
-    global sen1, sen2
-    rule1 = r'附.+号'  # 设定规则1：包含符号的规则
-    rule2 = r'.+号'    # 设定规则2：地址中包含"号"的规则
-    rule = [r'附.+号', r'.+号']
-    re1 = re.findall(rule[1], sen)  # 查找规则1包含字符，如包含len>0。具有规则楼栋，需要重新做正则式规则
-    re2 = re.findall(rule2[2], sen)  # 查找规则2包含字符，如包含len>0。规则漏洞：若地址中非街道部分包含本关键字,可能导致结果错误
-    if len(re1) > 0:
-        sentence = sen.split(re1[0], 1)
-        sen1 = '成功'
-        sen2 = '%s%s' % (sentence[0], re1[0]) # %s效率较 +效率更高
-        sen3 = sentence[1]
-    elif len(re2) > 0:
-        sentence = sen.split(re2[0], 1)
-        sen1 = '成功'
-        sen2 = '%s%s' % (sentence[0], re2[0])
-        sen3 = sentence[1]
+def address_first_cut(sen):
+    import re
+    global sen1, sen2, sen3
+    # 构建规则库，构建规则库时，可以考虑规则出现的频度，将最多的规则放在前面遍历
+    address_rule = (r'附\d{1,5}号', r'街\d{1,5}号', r'路\d{1,5}号', r'段\d{1,5}号', r'道\d{1,5}号', r'环\d{1,5}号')
+    if len(address_rule) == 0:  # 检查规则库是否为空
+        sen1 = 'false'
+        sen2 = '请检查'
+        sen3 = '规则'
     else:
-        sen1 = '失败'
-        sen2 = '请检查您输入的地址：'+sen
-        sen3 = ''
+        i = 0
+        while 0 <= i <= len(address_rule):  # 对输入地址进行轮转
+            sen_cut = re.findall(address_rule[i], sen)  # 查找规则包含字符
+            if len(sen_cut) > 0:  # 拆分有效
+                sentence = sen.split(sen_cut[0], 1)
+                sen1 = 'true'
+                sen2 = '%s%s' % (sentence[0], sen_cut[0])  # %s效率较 +效率更高
+                sen3 = sentence[1]
+                i = -2  # 规则适用成功，跳出循环
+            else:
+                i = i + 1
+        if i == -1:
+            sen1 = 'false'
+            sen2 = '地址识别失败：'
+            sen3 = sen
+
     return sen1, sen2, sen3
 
 
 x = input('请输入测试地址...\n')
-y = Address_First_Cut(x)
-if y[0] == '成功':
+
+y = address_first_cut(x)
+if y[0] == 'true':
     w1 = jieba.lcut(y[1])
     w2 = jieba.lcut(y[2])
     print(w1)
     print(w2)
 else:
-    print(y[1])
-
+    print(''.join(y))
