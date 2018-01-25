@@ -40,11 +40,3 @@ r = (s2017 - s2016) / s2016
 print('(字符串方法)小明成绩较上年提升了 %.1f%%' % r)
 print('(format方法)小明成绩较上年提升了 {0:.1f}%'.format(r))
 
-import re
-
-sen = '成都市锦江区工业大道109号'
-rule = [r'附.+号', r'.+号']
-x = rule[0]
-print(x)
-re1 = re.findall(x, sen)  # 查找规则1包含字符，如包含len>0。具有规则楼栋，需要重新做正则式规则
-print(re1)

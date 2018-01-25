@@ -41,4 +41,6 @@ while y > 0:
 print(Words)
 print('地址代码为：', V1, '-', V2)
 
+x = input('请输入测试地址...\n')
+
 

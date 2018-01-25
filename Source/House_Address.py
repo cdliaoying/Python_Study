@@ -44,7 +44,7 @@ def address_first_cut(sen):
                 sen2 = '%s%s' % (sentence[0], sen_cut[0])  # %s效率较 +效率更高
                 sen3 = sentence[1]
                 i = -2  # 规则适用成功，跳出循环
-            else:
+            else:  # 拆分无效
                 i = i + 1
         if i == -1:
             sen1 = 'false'
